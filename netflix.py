@@ -1,81 +1,114 @@
 import turtle
+import math # Import math for sqrt function
 
-# Create a turtle object
-n = turtle.Turtle()
-n.speed(0)  # Set the drawing speed to the fastest
+# --- Setup ---
+t = turtle.Turtle()
+s = turtle.Screen()
+s.bgcolor("black")  # Set screen to black for better contrast
+t.speed(0)
+t.hideturtle()
 
 # --- 1. Draw the Black Rounded Background ---
+t.penup()
+t.goto(-175, -175)
+t.pendown()
+t.color("#141414")  # Netflix's dark grey, not pure black
+t.begin_fill()
+t.forward(350)
+t.circle(25, 90)  # Creates smooth, rounded corners
+t.forward(350)
+t.circle(25, 90)
+t.forward(350)
+t.circle(25, 90)
+t.forward(350)
+t.circle(25, 90)
+t.end_fill()
 
-# Set up the pen
-n.penup()
-n.goto(-150, -200) # Starting position for the background
-n.pendown()
+# --- 2. Draw the "N" Logo with Correct Overlaps ---
 
-# Set the fill color for the background
-n.fillcolor("#221F1F") # A very dark grey, almost black
-n.begin_fill()
+# Define properties for the N shapes
+ANGLE = 22
+HEIGHT = 275
+WIDTH = 55
+COLOR_BRIGHT = "#E50914"  # Main bright Netflix red
+COLOR_DARK = "#B81D24"    # Darker red for the shadow/3D effect
 
-# Draw the rounded rectangle shape
-for _ in range(2):
-    n.forward(300)
-    n.circle(20, 90) # Creates a rounded corner
-    n.forward(400)
-    n.circle(20, 90)
+# Draw the left bar FIRST (bright red)
+t.penup()
+t.goto(-120, -125)
+t.pendown()
+t.color(COLOR_BRIGHT)
+t.begin_fill()
+t.setheading(90)  # Make it a vertical bar
+t.forward(HEIGHT)
+t.setheading(0)
+t.forward(WIDTH)
+t.setheading(270)
+t.forward(HEIGHT)
+t.setheading(180)
+t.forward(WIDTH)
+t.end_fill()
 
-n.end_fill() # Complete the fill for the background
+# --- Corrected middle "shadow" bar SECOND (dark red) ---
+t.penup()
+# Calculate the top-right corner of the left bar
+start_x_left_bar = -120
+start_y_left_bar = -125
+top_right_x_left_bar = start_x_left_bar + WIDTH
+top_right_y_left_bar = start_y_left_bar + HEIGHT
 
-# --- 2. Draw the Red "N" Logo ---
+# Calculate the bottom-left corner of the right bar
+start_x_right_bar = 65
+start_y_right_bar = -125
+bottom_left_x_right_bar = start_x_right_bar
+bottom_left_y_right_bar = start_y_right_bar
 
-# Hide the turtle icon for a cleaner look
-n.hideturtle()
+# Move to the starting point for the diagonal bar (top-right of the left bar)
+t.goto(top_right_x_left_bar, top_right_y_left_bar)
+t.pendown()
+t.color(COLOR_DARK)
+t.begin_fill()
 
-# Part A: Draw the left vertical bar of the "N"
-n.penup()
-n.goto(-80, -125)
-n.pendown()
-n.setheading(110) # Set the initial angle
-n.color("#B81D24") # Darker red for the "shadow"
-n.fillcolor("#E50914") # Main Netflix red
-n.begin_fill()
-n.forward(250)
-n.setheading(0)
-n.forward(50)
-n.setheading(290)
-n.forward(250)
-n.setheading(180)
-n.forward(50)
-n.end_fill()
+# Calculate the precise length of the diagonal segment
+# This is the distance from (top_right_x_left_bar, top_right_y_left_bar)
+# to (bottom_left_x_right_bar, bottom_left_y_right_bar)
+diagonal_length = math.sqrt(
+    (bottom_left_x_right_bar - top_right_x_left_bar)**2 +
+    (bottom_left_y_right_bar - top_right_y_left_bar)**2
+)
 
-# Part B: Draw the right vertical bar of the "N"
-n.penup()
-n.goto(20, 125)
-n.pendown()
-n.setheading(290)
-n.begin_fill()
-n.forward(250)
-n.setheading(180)
-n.forward(50)
-n.setheading(110)
-n.forward(250)
-n.setheading(0)
-n.forward(50)
-n.end_fill()
+# Draw the first long side (down-right diagonal)
+t.setheading(270 - ANGLE) # Tilt it diagonally
+t.forward(diagonal_length)
 
-# Part C: Draw the diagonal bar of the "N"
-n.penup()
-n.goto(-80, -125)
-n.pendown()
-n.setheading(290)
-n.begin_fill()
-n.forward(250)
-n.setheading(20)
-n.forward(55)
-n.setheading(110)
-n.forward(250)
-n.setheading(200)
-n.forward(55)
-n.end_fill()
+# Draw the short side (width, perpendicular to the long side)
+t.setheading(270 - ANGLE + 90) # Turn 90 degrees clockwise from current heading
+t.forward(WIDTH)
 
+# Draw the second long side (up-left diagonal, parallel to the first)
+t.setheading(90 - ANGLE) # Go back up diagonally
+t.forward(diagonal_length)
 
-# Keep the window open until it's manually closed
+# Draw the last short side (width, back to the start)
+t.setheading(90 - ANGLE + 90) # Turn 90 degrees clockwise from current heading
+t.forward(WIDTH)
+t.end_fill()
+t.penup() # Lift pen after drawing
+
+# --- Draw the right bar THIRD (bright red) ---
+t.goto(65, -125)  # Position it to the right of the diagonal bar
+t.pendown()
+t.color(COLOR_BRIGHT)
+t.begin_fill()
+t.setheading(90)  # Make it a vertical bar
+t.forward(HEIGHT)
+t.setheading(0)
+t.forward(WIDTH)
+t.setheading(270)
+t.forward(HEIGHT)
+t.setheading(180)
+t.forward(WIDTH)
+t.end_fill()
+
+# --- Finish ---
 turtle.done()
